@@ -1,0 +1,18 @@
+---
+- hosts: all
+  tasks:
+    - name: Reboot
+      shell: sleep 2 && shutdown -r now 
+      async: 1
+      poll: 0
+      ignore_errors: True
+      become: True
+
+    - name: Wait for Reboot
+      local_action: wait_for
+      args:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        delay: 20
+        timeout: 180
+      become: False

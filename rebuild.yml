@@ -1,0 +1,16 @@
+- hosts: all
+  vars:
+    - noobs_file: noobs.zip
+    - recovery_directory: /mnt/recovery
+  tasks:
+    - name: mount device
+      mount: name=/mnt/recovery src=/dev/mmcblk0p1 fstype=vfat state=mounted
+    - name: set reinstall
+      lineinfile: dest={{recovery_directory}}/recovery.cmdline regexp='^(runinstaller)?\s?(silentinstall)?\s?(.*)$' line='runinstaller silentinstall \3' backrefs=yes
+    - name: unmount device
+      mount: name=/mnt/recovery src=/dev/mmcblk0p1 fstype=vfat state=unmounted
+    - name: reboot
+      command: shutdown -r now
+      ignore_errors: True
+  become: yes
+
