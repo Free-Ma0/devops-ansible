@@ -9,7 +9,7 @@
         update_cache: yes
       vars:
         packages:
-        - apache2
+        - nginx
         - php
         - php-mysql
         - mysql-server
@@ -70,6 +70,6 @@
         - { regexp: "define\\('DB_USER'.*", line: "define('DB_USER', 'wordpress');" }
         - { regexp: "define\\('DB_PASSWORD'x*", line: "define('DB_PASSWORD', 'wordpress');" }
 
-    - name: restart apache
-      service: name=apache2
+    - name: restart nginx
+      service: name=nginx
       state: restarted
