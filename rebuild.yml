@@ -5,12 +5,28 @@
   tasks:
     - name: mount device
       mount: name=/mnt/recovery src=/dev/mmcblk0p1 fstype=vfat state=mounted
+      become: True
     - name: set reinstall
       lineinfile: dest={{recovery_directory}}/recovery.cmdline regexp='^(runinstaller)?\s?(silentinstall)?\s?(.*)$' line='runinstaller silentinstall \3' backrefs=yes
+      become: True
     - name: unmount device
       mount: name=/mnt/recovery src=/dev/mmcblk0p1 fstype=vfat state=unmounted
+      become: True
+    - name: clean known_hosts
+      shell: ssh-keygen -R {{ inventory_hostname }}
     - name: reboot
-      command: shutdown -r now
+      shell: sleep 2 && shutdown -r now 
+      async: 1
+      poll: 0
       ignore_errors: True
-  become: yes
-
+      become: True
+    - name: Wait for Reboot
+      local_action: wait_for
+      args:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        delay: 20
+        timeout: 1800
+      become: False
+    - name: clean known_hosts
+      shell: ssh-keygen -R {{ inventory_hostname }}

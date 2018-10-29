@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: True
+  tasks:
+    - name: install docker
+      shell: curl -sSL get.docker.com|sh
+      warn: False

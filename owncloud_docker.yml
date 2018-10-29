@@ -1,0 +1,7 @@
+---
+- name: install docker owncloud
+  hosts: all
+  tasks:
+    - name: install
+      shell: docker run -d -p 80:80 owncloud
+      become: True
